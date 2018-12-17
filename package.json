@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "nvivn-dev": "dev.js"
+    "nvivn-dev": "dev.js",
+    "nvivn-app-server": "server.js"
   },
   "scripts": {
     "start": "budo index.js:base.js --pushstate",
@@ -16,15 +17,14 @@
   },
   "author": "Jesse Kriss <jesse@jklabs.net>",
   "license": "MIT",
-  "devDependencies": {
-    "browserify": "^16.2.3",
-    "budo": "^11.5.0",
-    "uglifyify": "^5.0.1"
-  },
   "dependencies": {
     "@babel/core": "^7.2.2",
     "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
+    "budo": "^11.5.0",
+    "fs-extra": "^7.0.1",
     "postmsg-rpc": "^2.4.0",
-    "st": "^1.2.2"
+    "st": "^1.2.2",
+    "uglifyify": "^5.0.1"
   }
 }

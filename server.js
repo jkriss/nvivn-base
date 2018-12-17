@@ -1,13 +1,15 @@
+#!/usr/bin/env node
+
 const st = require('st')
 const fs = require('fs')
 const url = require('url')
 
 const mount = st({ path: __dirname + '/dist', url: '/dist', index: 'index.html' })
-const examples = st({ path: __dirname + '/examples', url: '/examples' })
+const apps = st({ path: __dirname + '/apps', url: '/apps' })
 
 const handler = (req, res) => {
   let stHandled = mount(req, res)
-  if (!stHandled) stHandled = examples(req, res)
+  if (!stHandled) stHandled = apps(req, res)
   if (!stHandled) {
     console.log("req.url:", req.url)
     if (req.url === '/favicon.ico') {

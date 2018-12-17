@@ -7,8 +7,8 @@ const { expose } = require('postmsg-rpc')
 
 const pathParts = window.location.pathname.split('/')
 const appName = pathParts[1]
-const appPath = appName ? `examples/${appName}/index.js` : 'index.js'
-const clientPath = window.__APP__ && window.__APP__.clientPath || '/client.js'
+const appPath = appName ? `apps/${appName}/index.js` : 'index.js'
+const clientPath = window.__APP__ && window.__APP__.clientPath || '/dist/client.js'
 
 // get keys
 // TODO support login/logout
@@ -99,7 +99,7 @@ const setup = async () => {
     </head>
     <body>
       <div id="app"></div>
-      <script src="${window.location.origin}/${clientPath}"></script>
+      <script src="${window.location.origin}${clientPath}"></script>
       <script src="${window.location.origin}/${appPath}"></script>
     </body>
   </html>
