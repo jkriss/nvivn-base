@@ -1,0 +1,30 @@
+{
+  "name": "@nvivn/base",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "nvivn-dev": "dev.js"
+  },
+  "scripts": {
+    "start": "budo index.js:base.js --pushstate",
+    "build:base": "browserify index.js -o dist/base.js -g uglifyify",
+    "build:client": "browserify client.js -o dist/client.js -g uglifyify",
+    "build:html": "cp index-prod.html dist/index.html",
+    "build": "npm run build:base && npm run build:client && npm run build:html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesse Kriss <jesse@jklabs.net>",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "budo": "^11.5.0",
+    "uglifyify": "^5.0.1"
+  },
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "babelify": "^10.0.0",
+    "postmsg-rpc": "^2.4.0",
+    "st": "^1.2.2"
+  }
+}

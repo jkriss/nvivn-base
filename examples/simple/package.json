@@ -1,0 +1,11 @@
+{
+  "name": "@nvivn/simple-example",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "../../dev.js"
+  },
+  "author": "Jesse Kriss <jesse@jklabs.net>",
+  "license": "MIT"
+}
