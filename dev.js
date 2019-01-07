@@ -13,11 +13,23 @@ const args = process.argv.slice(2)
 if (args[0] === 'build') {
   const browserify = require('browserify');
   const b = browserify()
+  const outputFile = './dist/index.js'
+  const Terser = require('terser')
   b.add('./index.js')
   b.transform(babelify)
   b.transform(uglifyify)
   fs.ensureDir('./dist').then(() => {
-    b.bundle().pipe(fs.createWriteStream('./dist/index.js'))
+    const outStream = fs.createWriteStream(outputFile)
+    b.bundle().pipe(outStream)
+    outStream.on('close', () => {
+      console.log("browserify finished, minifying")
+      const result = Terser.minify(fs.readFileSync(outputFile, 'utf8'))
+      if (result.error) {
+        console.error("error minifying:", result.error)
+      } else {
+        fs.writeFileSync(outputFile, result.code)
+      }
+    })
   })
 } else {
   budo('./index.js', {

@@ -8,11 +8,12 @@
     "nvivn-app-server": "server.js"
   },
   "scripts": {
-    "start": "budo index.js:base.js --pushstate",
-    "build:base": "browserify index.js -o dist/base.js -g uglifyify",
+    "start": "budo index.js:base.js --pushstate -- -t browserify-css",
+    "build:base": "browserify -t browserify-css index.js -o dist/base.js",
+    "build:base:minified": "browserify -t browserify-css index.js -o dist/base.js -g uglifyify",
     "build:client": "browserify client.js -o dist/client.js -g uglifyify",
     "build:html": "cp index-prod.html dist/index.html",
-    "build": "npm run build:base && npm run build:client && npm run build:html",
+    "build": "npm run build:base:minified && npm run build:client && npm run build:html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jesse Kriss <jesse@jklabs.net>",
@@ -23,8 +24,19 @@
     "browserify": "^16.2.3",
     "budo": "^11.5.0",
     "fs-extra": "^7.0.1",
+    "jquery": "^3.3.1",
+    "magnific-popup": "^1.1.0",
     "postmsg-rpc": "^2.4.0",
     "st": "^1.2.2",
+    "terser": "^3.14.1",
     "uglifyify": "^5.0.1"
+  },
+  "devDependencies": {
+    "browserify-css": "^0.14.0"
+  },
+  "browserify-css": {
+    "autoInject": true,
+    "minify": true,
+    "rootDir": "."
   }
 }

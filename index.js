@@ -1,9 +1,12 @@
-const Client = require('@nvivn/core/src/client/index')
-const getStore = require('@nvivn/core/src/util/store-connection')
-const { generate } = require('@nvivn/core/src/util/keys')
-const Config = require('@nvivn/core/src/config/localstorage-config')
-const nvivnConfig = require('@nvivn/core/src/config/nvivn-config')
+const getStore = require('@nvivn/core/util/store-connection')
+const { generate } = require('@nvivn/core/util/keys')
+const setupHub = require('@nvivn/hub/hub/browser').setup
 const { expose } = require('postmsg-rpc')
+const $ = window.$ = require('jquery')
+// const popop = require('magnific-popup/src/js/core')
+// require('magnific-popup/src/js/inline')
+const popop = require('./vendor/magnific-popup')
+require('./app.css')
 
 const pathParts = window.location.pathname.split('/')
 const appName = pathParts[1]
@@ -33,32 +36,29 @@ if (!keys) {
 const setup = async () => {
   // set up the nvivn stuff
   const prefix = `nvivn:config:${keys.publicKey}`
-  const messageStore = getStore(`leveljs:${keys.publicKey}/messages`, { publicKey: keys.publicKey })
-  const config = await nvivnConfig(new Config({
-    prefix,
-    layers: [
-      { name: 'defaults', data: {} },
-      { name: 'keys', data: { keys } },
-      { name: 'node' },
-      { name: 'syncs' }
-    ]
-  }))
 
-  // const client = new Client({ keys, messageStore, skipValidation: true, config })
-  const client = new Client({ messageStore, skipValidation: true, config })
-
+  const hub = await setupHub({
+    localStorage,
+    settings: {
+      messageStore: `leveljs:${keys.publicKey}/messages`,
+      keys
+    },
+  })
 
   // TODO use the public key to namespace these
 
   const methods = {
-    create: client.create,
-    sign: client.sign,
-    post: client.post,
-    postMany: client.postMany,
-    list: client.list,
-    verify: client.verify,
-    del: client.del,
-    info: client.info,
+    // core nvivn stuff
+    create: hub.create,
+    sign: hub.sign,
+    post: hub.post,
+    postMany: hub.postMany,
+    list: hub.list,
+    verify: hub.verify,
+    del: hub.del,
+    info: hub.info,
+
+    // scoped localStorage replacement
     setItem: (k, v) => {
       // console.log("setting", k, "to", v)
       localStorage.setItem(`${appName}:${keys.publicKey}:${k}`, v)
@@ -66,6 +66,19 @@ const setup = async () => {
     getItem: (k) => {
       // console.log("getting", k)
       return localStorage.getItem(`${appName}:${keys.publicKey}:${k}`)
+    },
+
+    // additional functions
+    export: ({ type }) => {
+      $.magnificPopup.open({
+        items: {
+          src: `
+            <div class="white-popup-block">
+              Dynamically created popup for ${type} export
+          </div>`,
+          type: 'inline'
+        }
+      });
     }
   }
 
@@ -99,7 +112,7 @@ const setup = async () => {
     </head>
     <body>
       <div id="app"></div>
-      <script src="${window.location.origin}${clientPath}"></script>
+      <script src="${window.location.origin}/${clientPath}"></script>
       <script src="${window.location.origin}/${appPath}"></script>
     </body>
   </html>
