@@ -12,7 +12,7 @@
     "build:base": "browserify -t browserify-css index.js -o dist/base.js",
     "build:base:minified": "browserify -t browserify-css index.js -o dist/base.js -g uglifyify",
     "build:client": "browserify client.js -o dist/client.js -g uglifyify",
-    "build:html": "cp index-prod.html dist/index.html",
+    "build:html": "cp index-prod.html dist/index.html && cp dev/iframe.html dist/",
     "build": "npm run build:base:minified && npm run build:client && npm run build:html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

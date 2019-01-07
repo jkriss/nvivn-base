@@ -5,6 +5,7 @@ const babelify = require('babelify')
 const uglifyify = require('uglifyify')
 const path = require('path')
 const fs = require('fs-extra')
+// const appBootstrapHandler = require('./app-bootstrap-handler')
 
 // TODO if there's a build argument, do that
 
@@ -40,7 +41,10 @@ if (args[0] === 'build') {
     dir: [path.join(__dirname, 'dev'), path.join(__dirname, 'dist'), '.'],
     browserify: {
       transform: babelify   // use ES6
-    }
+    },
+    // middleware: [
+    //   appBootstrapHandler
+    // ]
   }).on('connect', evt => {
     console.log(`Listening at ${evt.uri}`)
   })

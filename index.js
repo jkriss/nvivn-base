@@ -9,9 +9,11 @@ const popop = require('./vendor/magnific-popup')
 require('./app.css')
 
 const pathParts = window.location.pathname.split('/')
-const appName = pathParts[1]
+let appName = pathParts[1]
 const appPath = appName ? `apps/${appName}/index.js` : 'index.js'
-const clientPath = window.__APP__ && window.__APP__.clientPath || '/dist/client.js'
+if (!appName) appName = 'default'
+console.log("app name:", appName)
+// const clientPath = window.__APP__ && window.__APP__.clientPath || '/dist/client.js'
 
 // get keys
 // TODO support login/logout
@@ -40,7 +42,7 @@ const setup = async () => {
   const hub = await setupHub({
     localStorage,
     settings: {
-      messageStore: `leveljs:${keys.publicKey}/messages`,
+      messageStore: `leveljs:${keys.publicKey}/${appName}/messages`,
       keys
     },
   })
@@ -66,6 +68,11 @@ const setup = async () => {
     getItem: (k) => {
       // console.log("getting", k)
       return localStorage.getItem(`${appName}:${keys.publicKey}:${k}`)
+    },
+
+    // url persistence
+    setHash: (h) => {
+      window.location.hash = h ? h.replace('#','') : ''
     },
 
     // additional functions
@@ -97,28 +104,8 @@ const setup = async () => {
   // create an iframe
   const iframe = document.createElement('iframe');
   iframe.style.border = 0
-  const html = `
-  <!DOCTYPE html>
-  <html lang="en" dir="ltr">
-    <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <title>nvivn</title>
-      <style>
-      body {
-        background: #fff;
-      }
-      </style>
-    </head>
-    <body>
-      <div id="app"></div>
-      <script src="${window.location.origin}/${clientPath}"></script>
-      <script src="${window.location.origin}/${appPath}"></script>
-    </body>
-  </html>
-  `
   iframe.setAttribute('sandbox', 'allow-scripts allow-forms')
-  iframe.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(html)
+  iframe.src = '/iframe.html'+window.location.hash
   document.body.appendChild(iframe)
 }
 
