@@ -31,7 +31,10 @@ module.exports = (state, emit) => {
   function importRecords(type) {
     return () => {
       console.log(`importing ${type}`)
-      nvivn.import({ type })
+      nvivn.import({ type }).then((importResult) => {
+        console.log("import finished", importResult)
+        emit('record:added')
+      })
     }
   }
 

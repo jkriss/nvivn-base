@@ -8,6 +8,7 @@ const proquint = require('proquint')
 const { dataToFrames } = require("qrloop/exporter")
 const QRCode = require('qrcode')
 const nvivnEncoding = require('@nvivn/lora/src/nvivn-encoding')
+const Scanner = require('./components/scanner')
 
 require('./app.css')
 
@@ -56,6 +57,7 @@ const setup = async () => {
   const EXPORT_QR = 'export:QR'
 
   app.use((state, emitter, app) => {
+    if (!state.scanner) state.scanner = {}
     const ndjson = (records) => {
       return records.map(r => JSON.stringify(r)+'\n').join('')
     }
@@ -76,8 +78,9 @@ const setup = async () => {
       }
       showModal()
     })
-    emitter.on(IMPORT_TEXT, () => {
+    emitter.on(IMPORT_TEXT, ({ resolve, reject }) => {
       state.modalType = IMPORT_TEXT
+      state.rpcPromise = ({ resolve, reject })
       showModal()
     })
     emitter.on(EXPORT_QR, async ({ records }) => {
@@ -97,6 +100,46 @@ const setup = async () => {
         }
         showModal()
       }, 10)
+    })
+    emitter.on(IMPORT_QR, async ({ resolve, reject }) => {
+      state.modalType = IMPORT_QR
+      state.rpcPromise = ({ resolve, reject })
+      showModal()
+    })
+    emitter.on('scanner:scanned', (scanCount) => {
+      state.scanner.scanned = scanCount
+      emitter.emit('render')
+    })
+    emitter.on('scanner:progress', (progress) => {
+      state.scanner.progress = progress
+      emitter.emit('render')
+    })
+    emitter.on('scanner:done', (data) => {
+      // console.log("got scanned data:", data)
+      const messages = nvivnEncoding.decodeAll(data)
+      console.log("messages", messages)
+      state.importData = messages
+      emitter.emit('importMessages')
+      emitter.emit('hideModal')
+    })
+    emitter.on('importMessages', async () => {
+      console.log(`importing ${state.importData} messages`)
+      state.imported = await hub.postMany({ messages: state.importData })
+      console.log('import result:', state.imported)
+      state.importData = null
+      if (state.rpcPromise) {
+        state.rpcPromise.resolve(state.imported)
+        state.rpcPromise = null
+      }
+      emitter.emit('render')
+    })
+    emitter.on('hideModal', () => {
+      state.showModal = false
+      state.importData = null
+      state.exportData = null
+      state.status = null
+      state.error = null
+      emitter.emit('render')
     })
   })
   app.route('*', mainView)
@@ -124,12 +167,8 @@ const setup = async () => {
     let content = 'Loading...'
 
     function hide() {
-      state.showModal = false
-      state.importData = null
-      state.exportData = null
-      state.status = null
-      state.error = null
-      emit('render')
+      console.log("hiding modal...")
+      emit('hideModal')
     }
 
     function trap(evt) {
@@ -139,7 +178,7 @@ const setup = async () => {
     function parseJsonLines(evt) {
       const data = evt.target.value
       state.pastedData = data
-      console.log("parsing:", data)
+      // console.log("parsing:", data)
       try {
         const messages = data.trim().split('\n').map(JSON.parse)
         state.importData = messages
@@ -151,11 +190,8 @@ const setup = async () => {
       emit('render')
     }
 
-    async function importMessages(evt) {
-      console.log(`importing ${state.importData} messages`)
-      state.imported = await hub.postMany({ messages: state.importData })
-      state.importData = null
-      emit('render')
+    async function importMessages() {
+      emit('importMessages')
     }
 
     if (state.modalType === EXPORT_TEXT) {
@@ -192,6 +228,14 @@ const setup = async () => {
           emit('render')
         }, state.exportData.delay)
       }
+    } else if (state.modalType = IMPORT_QR) {
+      content = html`
+      <div>
+        ${state.cache(Scanner, 'scanner').render({ scan: true, style: 'width:250px;' })}
+        <div>scanned: ${this.state.scanner.scanned || 0}</div>
+        <div>progress: ${this.state.scanner.progress || 0}</div>
+      </div>
+      `
     }
     return html`
       <div>
@@ -240,25 +284,20 @@ const setup = async () => {
 
     // data sync utilities
     import: async ({ type }) => {
-      if (type === 'text') {
-        app.emitter.emit('import:text')
-        // function doImport() {
-        //   const value = document.querySelector('#paste-target').value
-        //   console.log("importing", value)
-        // }
-        // content = html`
-        // <p>Paste the text into here:</p>
-        // <textarea id="paste-target"></textarea>
-        // <button onclick=${doImport}>import</button>
-        // `
-      }
+      return new Promise((resolve, reject) => {
+        if (type === 'text') {
+          app.emitter.emit(IMPORT_TEXT, { resolve, reject })
+        } else if (type === 'qr') {
+          app.emitter.emit(IMPORT_QR, { resolve, reject })
+        }
+      })
     },
 
     export: async ({ type, records, filter }) => {
       if (!records) records = await hub.list(filter)
 
       if (type === 'text') {
-        app.emitter.emit(EXPORT_QR, { records })
+        app.emitter.emit(EXPORT_TEXT, { records })
       } else if (type === 'qr') {
         app.emitter.emit(EXPORT_QR, { records })
       }

@@ -37,6 +37,7 @@ if (args[0] === 'build') {
     // stream: process.stdout, // log to stdout
     // port: 8000,             // use this as the base port
     pushstate: true,
+    ssl: true,
     dir: [path.join(__dirname, 'dev'), path.join(__dirname, 'dist'), '.'],
     browserify: {
       transform: [
