@@ -10,6 +10,10 @@
   "author": "Jesse Kriss <jesse@jklabs.net>",
   "license": "MIT",
   "dependencies": {
-    "choo": "^6.13.1"
+    "choo": "^6.13.1",
+    "fecha": "^3.0.2",
+    "md5": "^2.2.1",
+    "normalize.css": "^8.0.1",
+    "tiny-human-time": "^1.2.0"
   }
 }

@@ -7,28 +7,13 @@ const pages = [
   { name: 'Sync', href: '#sync' },
 ]
 
+// inject our styles
+// document.head.innerHTML += `<link rel="stylesheet" href="static/styles.css" type="text/css">`
+require('./styles.css')
+
 module.exports = function (body, { currentPage }={}) {
   return html`
 <div>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    }
-    nav ul {
-      padding: 0;
-    }
-    nav ul, nav li {
-      display: inline-block;
-    }
-    nav li {
-      margin-right: 10px;
-    }
-    nav li.active a {
-      font-weight: bold;
-      text-decoration: none;
-      color: #333;
-    }
-  </style>
   <nav>
     <h1>status</h1>
     <ul>

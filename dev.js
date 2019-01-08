@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 
 const budo = require('budo')
+const browserifyCss = require('browserify-css')
 const babelify = require('babelify')
 const uglifyify = require('uglifyify')
 const path = require('path')
 const fs = require('fs-extra')
-// const appBootstrapHandler = require('./app-bootstrap-handler')
-
-// TODO if there's a build argument, do that
 
 const args = process.argv.slice(2)
 
@@ -17,6 +15,7 @@ if (args[0] === 'build') {
   const outputFile = './dist/index.js'
   const Terser = require('terser')
   b.add('./index.js')
+  b.transform(browserifyCss, { minify: true, autoInject: true })
   b.transform(babelify)
   b.transform(uglifyify)
   fs.ensureDir('./dist').then(() => {
@@ -40,7 +39,11 @@ if (args[0] === 'build') {
     pushstate: true,
     dir: [path.join(__dirname, 'dev'), path.join(__dirname, 'dist'), '.'],
     browserify: {
-      transform: babelify   // use ES6
+      transform: [
+        babelify,   // use ES6
+        [browserifyCss, { minify: true, autoInject: true }]
+      ]
+
     },
     // middleware: [
     //   appBootstrapHandler

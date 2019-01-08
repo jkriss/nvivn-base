@@ -2,6 +2,7 @@ const getStore = require('@nvivn/core/util/store-connection')
 const { generate } = require('@nvivn/core/util/keys')
 const setupHub = require('@nvivn/hub/hub/browser').setup
 const { expose } = require('postmsg-rpc')
+const proquint = require('proquint')
 const $ = window.$ = require('jquery')
 // const popop = require('magnific-popup/src/js/core')
 // require('magnific-popup/src/js/inline')
@@ -75,7 +76,13 @@ const setup = async () => {
       window.location.hash = h ? h.replace('#','') : ''
     },
 
-    // additional functions
+    // public key formatting
+    readableKey: (key, { words=3 }={}) => {
+      const buf = Buffer.from(key, 'base64')
+      return proquint.encode(buf.slice(0,words*2))
+    },
+
+    // data sync utilities
     export: ({ type }) => {
       $.magnificPopup.open({
         items: {

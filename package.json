@@ -22,17 +22,16 @@
     "@babel/core": "^7.2.2",
     "babelify": "^10.0.0",
     "browserify": "^16.2.3",
+    "browserify-css": "^0.14.0",
     "budo": "^11.5.0",
     "fs-extra": "^7.0.1",
     "jquery": "^3.3.1",
     "magnific-popup": "^1.1.0",
     "postmsg-rpc": "^2.4.0",
+    "proquint": "0.0.1",
     "st": "^1.2.2",
     "terser": "^3.14.1",
     "uglifyify": "^5.0.1"
-  },
-  "devDependencies": {
-    "browserify-css": "^0.14.0"
   },
   "browserify-css": {
     "autoInject": true,

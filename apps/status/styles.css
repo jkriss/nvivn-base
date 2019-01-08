@@ -1,0 +1,75 @@
+@import url('node_modules/normalize.css/normalize.css');
+
+body {
+  margin: 0;
+  padding: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+nav {
+  margin-bottom: 0.5em;
+}
+nav h1 {
+  margin: 0;
+  margin-right: 0.3em;
+  display: inline-block;
+}
+nav ul {
+  margin: 0;
+  padding: 0;
+}
+nav ul, nav li {
+  display: inline-block;
+}
+nav li {
+  margin-right: 0.3em;
+}
+nav li a {
+  text-decoration: none;
+  color: steelblue;
+}
+nav li.active a {
+  font-weight: bold;
+  color: #333;
+}
+
+/* form stuff via https://webdesign.tutsplus.com/tutorials/how-to-build-web-form-layouts-with-css-grid--cms-28776 */
+
+form.report {
+  display: grid;
+  max-width: 600px;
+}
+/* form input {
+  background: #fff;
+  border: 1px solid #9c9c9c;
+} */
+form.report button {
+  /* padding: 0.7em; */
+  width: 100%;
+  /* border: 0; */
+}
+
+.report label {
+  text-align: right;
+  padding: 0.5em 0.5em 0.5em 0;
+}
+
+.report input {
+  padding: 0.7em;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 400px) {
+  form.report {
+    grid-template-columns: 4em 1fr;
+    grid-gap: 16px;
+  }
+
+  .report label {
+    grid-column: 1 / 2;
+  }
+
+  .report input,
+  .report button {
+    grid-column: 2 / 3;
+  }
+}
