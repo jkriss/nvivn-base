@@ -54,7 +54,7 @@ module.exports = (state, emit) => {
 
   return layout(html`
     <div>
-      <h2>Reported so far: ${state.statusCount > state.maxFetch ? state.maxFetch+'+' : state.statusCount}</h2>
+      <h2>Reported so far: ${state.displayTotal}</h2>
       <form onsubmit=${search}>
         <input type="text" id="q" value="${state.q || ''}">
         <input type="submit" value="Search">

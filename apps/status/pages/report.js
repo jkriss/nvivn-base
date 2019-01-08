@@ -50,7 +50,7 @@ module.exports = (state, emit) => {
 
   return layout(html`
     <div>
-      <h2>Reported so far: ${state.statusCount > state.maxFetch ? state.maxFetch+'+' : state.statusCount}</h2>
+      <h2>Reported so far: ${state.displayTotal}</h2>
       <form class="report" onsubmit=${addStatus}>
         <label for="name">Name</label>
         <input type="text" id="name">
