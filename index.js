@@ -109,7 +109,8 @@ const setup = async () => {
           qrImages: [],
           frames,
           currentFrame: 0,
-          delay: 80
+          // delay: 80
+          delay: 150
         }
         showModal()
       }, 10)
@@ -334,6 +335,10 @@ const setup = async () => {
       } else if (type === 'qr') {
         app.emitter.emit(EXPORT_QR, { records })
       }
+    },
+
+    getAppCode: () => {
+      return fetch('app.js').then(res => res.text())
     }
   }
 
@@ -354,8 +359,7 @@ const setup = async () => {
 
   // create an iframe which will host the app code
   const iframe = document.createElement('iframe');
-  // iframe.style.border = 0
-  iframe.setAttribute('sandbox', 'allow-scripts allow-forms')
+  // iframe.setAttribute('sandbox', 'allow-scripts allow-forms')
   iframe.src = '/iframe.html'+window.location.hash
   document.body.appendChild(iframe)
 }

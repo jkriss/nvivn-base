@@ -9,8 +9,9 @@
     "watch:base": "watchify -t browserify-css index.js -o dist/base.js -v",
     "build:base:minified": "browserify -t browserify-css index.js -o dist/base.js -g uglifyify",
     "build:client": "browserify client.js -o dist/client.js -g uglifyify",
-    "build:html": "cp html/* dist/",
-    "build": "npm run build:base:minified && npm run build:client && npm run build:html",
+    "build:sw": "cp sw.js dist",
+    "build:html": "cp html/index.html dist/ && node scripts/build-iframe-page",
+    "build": "npm run build:base:minified && npm run build:client && npm run build:html && npm run build:sw",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jesse Kriss <jesse@jklabs.net>",

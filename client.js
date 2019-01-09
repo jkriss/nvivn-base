@@ -1,6 +1,6 @@
 const { caller } = require('postmsg-rpc')
 
-const methods = ['create', 'sign', 'list', 'del', 'verify', 'post', 'postMany', 'clear', 'setItem', 'getItem', 'info', 'setHash', 'readableKey', 'import', 'export']
+const methods = ['create', 'sign', 'list', 'del', 'verify', 'post', 'postMany', 'clear', 'setItem', 'getItem', 'info', 'setHash', 'readableKey', 'import', 'export', 'getAppCode']
 
 const client = {}
 for (const m of methods) {
