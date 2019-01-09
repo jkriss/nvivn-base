@@ -130,15 +130,17 @@ const setup = async () => {
   }
 
   // create an iframe which will host the app code
-  const iframe = document.createElement('iframe');
+  // const iframe = document.createElement('iframe');
 
-  // const iframe = document.querySelector('iframe')
+  const iframe = document.querySelector('iframe')
   // iframe.contentWindow.location.hash=window.location.hash.replace(/^#/,'')
 
 
-  iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-same-origin')
-  iframe.src = 'iframe.html'+window.location.hash
-  document.body.appendChild(iframe)
+  // iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-same-origin')
+  setTimeout(() => {
+    iframe.src = 'iframe.html'+window.location.hash
+  }, 20)
+  // document.body.appendChild(iframe)
 }
 
 setup()
