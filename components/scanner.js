@@ -39,7 +39,10 @@ module.exports = class Scanner extends Component {
   };
 
   setupScanner() {
-    this.scanner = new Instascan.Scanner({ video: this.local.element.querySelector('video') })
+    this.scanner = new Instascan.Scanner({
+      video: this.local.element.querySelector('video'),
+      scanPeriod: 1
+     })
     this.scanner.addListener('scan', (content) => {
       console.log('got data', content);
       this.handleData(content)

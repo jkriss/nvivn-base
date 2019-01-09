@@ -88,15 +88,28 @@ const setup = async () => {
       state.modalType = EXPORT_QR
       showModal()
       setTimeout(async () => {
+        let start = Date.now()
         const binPayload = Buffer.concat(records.map(r => nvivnEncoding.encode(r)))
+        let end = Date.now()
+        console.log('binary encoded in', end-start, 'ms')
+        start = end
         const packetSize = 250
-        const loops = 10
+        const loops = 5
         const frames = dataToFrames(binPayload, packetSize, loops)
-        const qrImages = await Promise.all(frames.map(f => QRCode.toDataURL(f)))
+        end = Date.now()
+        console.log('calculated data frames in', end-start, 'ms')
+        start = end
+        // const qrImages = await Promise.all(frames.map(async (f) => {
+        //   // return QRCode.toDataURL(f)
+        //   return QRCode.toString(f).then(svg => `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`)
+        // }))
+        end = Date.now()
+        console.log('generated qr codes in', end-start, 'ms')
         state.exportData = {
-          qrImages,
+          qrImages: [],
+          frames,
           currentFrame: 0,
-          delay: 150
+          delay: 80
         }
         showModal()
       }, 10)
@@ -217,21 +230,34 @@ const setup = async () => {
       if (!state.exportData) {
         content = 'Loading...'
       } else {
+        const img = state.exportData.qrImages[state.exportData.currentFrame]
         content = html`
-        <img id="animated-qr" src="${state.exportData.qrImages[state.exportData.currentFrame++]}">
+        <div>${img ? html`<img id="animated-qr" src="${img}">` : ''}</div>
         `
-        setTimeout(() => {
+        setTimeout(async () => {
+          // console.log("total frames:", state.exportData.frames.length)
           if (!state.exportData) return
-          if (state.exportData.currentFrame === state.exportData.qrImages.length) {
+          state.exportData.currentFrame++
+          if (state.exportData.currentFrame === state.exportData.frames.length) {
             state.exportData.currentFrame = 0
           }
+          let img = state.exportData.qrImages[state.exportData.currentFrame]
+          let f = state.exportData.frames[state.exportData.currentFrame]
+          if (!img) {
+            // console.log("creating image")
+            img = await QRCode.toString(f).then(svg => `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`)
+            state.exportData.qrImages[state.exportData.currentFrame] = img
+          } else {
+            // console.log("using cached image")
+          }
+          // QRCode.toString(f).then(svg => `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`)
           emit('render')
         }, state.exportData.delay)
       }
     } else if (state.modalType = IMPORT_QR) {
       content = html`
       <div>
-        ${state.cache(Scanner, 'scanner').render({ scan: true, style: 'width:250px;' })}
+        ${state.cache(Scanner, 'scanner').render({ scan: true, style: 'width:250px;height:250px;' })}
         <div>scanned: ${this.state.scanner.scanned || 0}</div>
         <div>progress: ${this.state.scanner.progress || 0}</div>
       </div>
