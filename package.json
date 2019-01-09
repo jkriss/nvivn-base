@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js:base.js --pushstate -- -t browserify-css",
+    "start": "budo index.js:base.js -- -t browserify-css",
     "build:base": "browserify -t browserify-css index.js -o dist/base.js",
     "watch:base": "watchify -t browserify-css index.js -o dist/base.js -v",
     "build:base:minified": "browserify -t browserify-css index.js -o dist/base.js -g uglifyify",
     "build:client": "browserify client.js -o dist/client.js -g uglifyify",
     "build:sw": "cp sw.js dist",
-    "build:html": "cp html/index.html dist/ && node scripts/build-iframe-page",
+    "build:html": "cp html/* dist/",
     "build": "npm run build:base:minified && npm run build:client && npm run build:html && npm run build:sw",
+    "build:analyze": "mkdir -p tmp ; browserify -t browserify-css index.js -o tmp/bundle.js --full-paths && discify tmp/bundle.js > tmp/bundle.html && open tmp/bundle.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jesse Kriss <jesse@jklabs.net>",
@@ -39,6 +40,7 @@
     "rootDir": "."
   },
   "devDependencies": {
+    "discify": "^1.6.3",
     "watchify": "^3.11.0"
   }
 }

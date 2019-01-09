@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "budo --ssl --dir ../../dist/ --dir . index.js:app.js -- -t browserify-css",
+    "start": "budo --dir ../../dist/ --dir . index.js:app.js -- -t browserify-css",
     "build:js": "browserify index.js -t browserify-css -o dist/app.js",
     "build:html": "cp ../../dist/* dist",
     "build": "npm run build:js && npm run build:html"
