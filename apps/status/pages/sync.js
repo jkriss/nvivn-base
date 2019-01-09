@@ -38,6 +38,11 @@ module.exports = (state, emit) => {
     }
   }
 
+  async function clearAll() {
+    await nvivn.clear()
+    emit('record:added')
+  }
+
   const count = state.exportSet ? state.exportSet.length : state.displayTotal
 
   const makeOption = (value, label) => {
@@ -61,6 +66,9 @@ module.exports = (state, emit) => {
       </h2>
 
       ${types.map(t => html`<button onclick=${exportRecords(t.name)}>${t.label}</button>`)}
+
+      <h2>Reset</h2>
+      <button onclick=${clearAll}>Clear all</button>
 
     </div>
   `, { currentPage: 'sync' })

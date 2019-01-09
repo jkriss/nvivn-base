@@ -261,6 +261,13 @@ const setup = async () => {
     del: hub.del,
     info: hub.info,
 
+    clear: async () => {
+      const messages = await hub.list()
+      for (const m of messages) {
+        await hub.del({ hash: m.meta.hash, hard: true })
+      }
+    },
+
     // scoped localStorage replacement
     setItem: (k, v) => {
       // console.log("setting", k, "to", v)
