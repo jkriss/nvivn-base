@@ -14,7 +14,7 @@
     "build:base:minified": "browserify -t browserify-css index.js -o dist/base.js -g uglifyify",
     "build:client": "browserify client.js -o dist/client.js -g uglifyify",
     "build:html": "cp index-prod.html dist/index.html && cp dev/iframe.html dist/",
-    "build": "npm run build:base:minified && npm run build:client && npm run build:html",
+    "build": "npm run build:base:minified && npm run build:client && npm run build:html && npm run copy:worker",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jesse Kriss <jesse@jklabs.net>",
@@ -27,6 +27,7 @@
     "budo": "^11.5.0",
     "choo": "^6.13.1",
     "fs-extra": "^7.0.1",
+    "gifencoder": "^2.0.1",
     "instascan": "git+https://github.com/jkriss/instascan.git",
     "postmsg-rpc": "^2.4.0",
     "proquint": "0.0.1",

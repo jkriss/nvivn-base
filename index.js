@@ -7,6 +7,7 @@ const { expose } = require('postmsg-rpc')
 const proquint = require('proquint')
 const { dataToFrames } = require("qrloop/exporter")
 const QRCode = require('qrcode')
+const GIFEncoder = require('gifencoder')
 const nvivnEncoding = require('@nvivn/lora/src/nvivn-encoding')
 const Scanner = require('./components/scanner')
 
@@ -94,7 +95,7 @@ const setup = async () => {
         console.log('binary encoded in', end-start, 'ms')
         start = end
         const packetSize = 250
-        const loops = 5
+        const loops = 2
         const frames = dataToFrames(binPayload, packetSize, loops)
         end = Date.now()
         console.log('calculated data frames in', end-start, 'ms')
@@ -103,6 +104,51 @@ const setup = async () => {
         //   // return QRCode.toDataURL(f)
         //   return QRCode.toString(f).then(svg => `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`)
         // }))
+
+
+        // make a gif
+        start = end
+        const size = 300
+        const encoder = new GIFEncoder(size, size)
+        encoder.start()
+        encoder.setRepeat(0)
+        encoder.setDelay(100)
+        const canvas = document.createElement('canvas')
+        canvas.width = size*2
+        canvas.style.display = 'none'
+        // document.body.appendChild(canvas)
+        const ctx = canvas.getContext('2d')
+        // const qrImages = await Promise.all(frames.map(async (f) => {
+        //   // return QRCode.toDataURL(f)
+        //   return QRCode.to(f)
+        //     .then(svg => `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`)
+        // }))
+        console.log(`generated ${frames.length} svg frames`)
+        for (const f of frames) {
+          await QRCode.toCanvas(canvas, f, {width:size})
+          // const img = document.createElement('img')
+          // img.width = 200,
+          // img.height = 200
+          // img.src = dataUri
+          // await new Promise(resolve => {
+          //   img.onload = () => {
+          //     console.log("image loaded")
+          //     ctx.drawImage(img, 0, 0)
+              encoder.addFrame(ctx)
+          //     resolve()
+          //   }
+          //   console.log("set img src to", dataUri)
+          //   img.src = dataUri
+          // })
+        }
+        encoder.finish();
+        const buf = encoder.out.getData();
+        console.log("image data:", buf)
+        state.gifData = URL.createObjectURL(new Blob([buf]), { type: 'image/gif' } )
+        end = Date.now()
+        console.log('generated gif in', end-start, 'ms')
+        start = end
+
         end = Date.now()
         console.log('generated qr codes in', end-start, 'ms')
         state.exportData = {
@@ -232,7 +278,10 @@ const setup = async () => {
       } else {
         const img = state.exportData.qrImages[state.exportData.currentFrame]
         content = html`
-        <div>${img ? html`<img id="animated-qr" src="${img}">` : ''}</div>
+        <div>
+          ${img ? html`<img id="animated-qr" src="${img}">` : ''}
+          ${state.gifData ? html`<img src="${state.gifData}">` : '' }
+          </div>
         `
         setTimeout(async () => {
           // console.log("total frames:", state.exportData.frames.length)
