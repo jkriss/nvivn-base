@@ -337,6 +337,10 @@ const setup = async () => {
     }
   }
 
+  // const iframe = document.querySelector('iframe')
+  // console.log("iframe:", iframe)
+  // iframe.src = '/iframe.html'+window.location.hash
+
   const customPostMessage = (data, targetOrigin) => {
     // console.log("posting result back", data, targetOrigin)
     iframe.contentWindow.postMessage(data, targetOrigin)
@@ -348,10 +352,9 @@ const setup = async () => {
     expose(m, methods[m], { postMessage: customPostMessage })
   }
 
-  // now mount the app, and call it with the client
-  // create an iframe
+  // create an iframe which will host the app code
   const iframe = document.createElement('iframe');
-  iframe.style.border = 0
+  // iframe.style.border = 0
   iframe.setAttribute('sandbox', 'allow-scripts allow-forms')
   iframe.src = '/iframe.html'+window.location.hash
   document.body.appendChild(iframe)

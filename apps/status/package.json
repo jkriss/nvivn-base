@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "../../dev.js",
-    "build": "../../dev.js build"
+    "start": "budo --ssl --dir ../../dist/ --dir . index.js:app.js -- -t browserify-css",
+    "build:js": "browserify index.js -t browserify-css -o dist/app.js",
+    "build:html": "cp ../../dist/* dist",
+    "build": "npm run build:js && npm run build:html"
   },
   "author": "Jesse Kriss <jesse@jklabs.net>",
   "license": "MIT",
@@ -15,5 +17,10 @@
     "md5": "^2.2.1",
     "normalize.css": "^8.0.1",
     "tiny-human-time": "^1.2.0"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "browserify-css": "^0.14.0",
+    "budo": "^11.5.0"
   }
 }
