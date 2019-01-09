@@ -3,7 +3,7 @@ const {
   IMPORT_QR,
   EXPORT_TEXT,
   EXPORT_QR
-} = require('constants')
+} = require('./constants')
 const choo = require('choo')
 const html = require('choo/html')
 const { dataToFrames } = require("qrloop/exporter")

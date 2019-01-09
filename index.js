@@ -8,7 +8,7 @@ const {
   IMPORT_QR,
   EXPORT_TEXT,
   EXPORT_QR
-} = require('constants')
+} = require('./constants')
 
 require('./sw-loader.js')
 const app = require('./base-app')
